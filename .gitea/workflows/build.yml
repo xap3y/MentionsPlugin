@@ -1,0 +1,27 @@
+name: Build Mentions plugin
+run-name: Build Mentions plugin
+on: [push]
+jobs:
+    Build-latest-jar:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build | Prepare packages
+              run: |
+                  apt update; apt-get install -y wget software-properties-common apt-transport-https gpg
+                  wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor | tee /etc/apt/trusted.gpg.d/adoptium.gpg > /dev/null
+                  echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+                  apt update; apt-get install -y temurin-21-jdk
+            - name: Prepare | Setup git
+              run: |
+                  git config --global user.name "Radim Lipovčan"
+                  git config --global user.email "radim@lipovcan.cz"
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            - name: Build | Gradle build
+              run: |
+                  ls -lah
+                  chmod +x ./gradlew
+                  ./gradlew build && ls -lah && ls */ -lah && ls */* -lah&& ls */*/* -lah
+            - name: Build | publish jar
+              run:  |
+                  curl --insecure --user username:mypass -T build/libs/Mentions-1.0.jar ftp://192.168.10.133:/

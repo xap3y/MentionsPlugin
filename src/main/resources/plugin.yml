@@ -1,0 +1,10 @@
+name: Mentions
+version: '1.0'
+main: eu.xap3y.mentions.Mentions
+api-version: '1.20'
+authors: [ XAP3Y ]
+description: Mention plugin for Minecore.
+website: https://minecore.cz
+
+
+

@@ -1,0 +1,33 @@
+# Player mention plugin config in Czech, & for colors
+prefix: "&8[&a&lMentions&8] &r"
+
+mention-prefix: "@" # Napr.: @ownercz
+
+# Variably:
+# %player% - jméno hráče, který tě zmínil
+# %target% - jméno hráče, který byl zmíněn
+
+actionbar:
+    enabled: true
+    message: "&a%player% &7tě zmínil v chatu!"
+    delay: 20 # ticks
+
+sound:
+    enabled: true
+    sound: "BLOCK_NOTE_BLOCK_BELL" # https://helpch.at/docs/1.20/org/bukkit/Sound.html
+    volume: 1.0 # 0.0 - 1.0
+    pitch: 1.0 # 0.5 - 2.0
+
+# Formatovani chatu, neposle novou zpravy.
+# Napr.: Ahoj OwnerCZ, jak se máš? -> Ahoj &a&lOwnerCZ&r, jak se máš?
+chat:
+    enabled: true
+    replace: "&a&l%nick%&r"
+
+title:
+    enabled: true
+    title: "&a%player%" # Prazdný řetězec = žádný title
+    subtitle: "&7tě zmínil v chatu!" # Prazdný řetězec = žádný subtitle
+    fade-in: 20 # ticks
+    stay: 60 # ticks
+    fade-out: 20 # ticks
