@@ -22,6 +22,13 @@ jobs:
                   ls -lah
                   chmod +x ./gradlew
                   ./gradlew build && ls -lah && ls */ -lah && ls */* -lah&& ls */*/* -lah
+           
+            - name: Release
+              uses: https://git.lipovcan.cz/Upstream/gitea-release-action.git@v1
+              with:
+                tag_name: "1.21.10"
+                files: |-
+                  build/libs/Mentions-1.0.jar    
             - name: Build | publish jar
               run:  |
                   curl --insecure --user username:mypass -T build/libs/Mentions-1.0.jar ftp://192.168.10.133:/
