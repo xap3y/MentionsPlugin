@@ -1,5 +1,5 @@
 name: Mentions
-version: '1.0'
+version: '1.1'
 main: eu.xap3y.mentions.Mentions
 api-version: '1.20'
 authors: [ XAP3Y ]

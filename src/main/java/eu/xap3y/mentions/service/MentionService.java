@@ -1,6 +1,8 @@
 package eu.xap3y.mentions.service;
 
 import eu.xap3y.mentions.Mentions;
+import eu.xap3y.mentions.api.enums.SettingType;
+import eu.xap3y.mentions.manager.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,20 +14,23 @@ public class MentionService {
         FileConfiguration cfg = Mentions.getInstance().getConfig();
 
         boolean useSound = cfg.getBoolean("sound.enabled", false);
+        boolean userSoundPreference = ConfigManager.getSetting(SettingType.SOUND, mentioned.getUniqueId());
 
         boolean useTitle = cfg.getBoolean("title.enabled", false);
+        boolean userTitlePreference = ConfigManager.getSetting(SettingType.TITLE, mentioned.getUniqueId());
 
         boolean useActionBar = cfg.getBoolean("actionbar.enabled", false);
+        boolean userActionPreference = ConfigManager.getSetting(SettingType.ACTIONBAR, mentioned.getUniqueId());
 
-        if (useSound) {
+        if (useSound && userSoundPreference) {
             sendSound(mentioner, mentioned);
         }
 
-        if (useTitle) {
+        if (useTitle && userTitlePreference) {
             sendTitle(mentioner, mentioned);
         }
 
-        if (useActionBar) {
+        if (useActionBar && userActionPreference) {
             sendActionBar(mentioner, mentioned);
         }
     }
