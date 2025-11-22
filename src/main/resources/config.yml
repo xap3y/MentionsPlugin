@@ -1,16 +1,18 @@
-# Player mention plugin config in Czech, & for colors
+# Configuration file for Mentions plugin
+# Supports HEX colors using &#RRGGBB or MiniMessage format
 prefix: "&8[&a&lMentions&8] &r"
 
-mention-prefix: "@" # Napr.: @ownercz
+mention-prefix: "@" # Etc.: @XAP3Y
 
-# Variably:
-# %player% - jméno hráče, který tě zmínil
-# %target% - jméno hráče, který byl zmíněn
+gui-enable: true # Allow GUI to manage mention notifications using /mentions
+
+# Variables:
+# %player% - name of the player who mentioned you
+# %target% - name of the player who was mentioned
 
 actionbar:
     enabled: true
-    message: "&a%player% &7tě zmínil v chatu!"
-    delay: 20 # ticks
+    message: "&a%player% &7mentioned you!"
 
 sound:
     enabled: true
@@ -18,16 +20,16 @@ sound:
     volume: 1.0 # 0.0 - 1.0
     pitch: 1.0 # 0.5 - 2.0
 
-# Formatovani chatu, neposle novou zpravy.
-# Napr.: Ahoj OwnerCZ, jak se máš? -> Ahoj &a&lOwnerCZ&r, jak se máš?
+# Chat formatting, does not send a new message.
+# Etc. Hi XAP3Y, how are you? -> Hi &a&lXAP3Y&r, how are you?
 chat:
     enabled: true
     replace: "&a&l%nick%&r"
 
 title:
     enabled: true
-    title: "&a%player%" # Prazdný řetězec = žádný title
-    subtitle: "&7tě zmínil v chatu!" # Prazdný řetězec = žádný subtitle
+    title: "&a%player%" # Empty string = no title
+    subtitle: "&7tě zmínil v chatu!" # Empty string = no subtitle
     fade-in: 20 # ticks
     stay: 60 # ticks
     fade-out: 20 # ticks

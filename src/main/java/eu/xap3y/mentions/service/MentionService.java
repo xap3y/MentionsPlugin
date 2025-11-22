@@ -1,9 +1,9 @@
 package eu.xap3y.mentions.service;
 
 import eu.xap3y.mentions.Mentions;
+import eu.xap3y.mentions.adapter.PaperAdapter;
 import eu.xap3y.mentions.api.enums.SettingType;
 import eu.xap3y.mentions.manager.ConfigManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -48,7 +48,16 @@ public class MentionService {
         subtitle = subtitle.replaceAll("%target%", target.getName());
         subtitle = subtitle.replaceAll("%player%", player.getName());
 
-        target.sendTitle(Texter.colored(title), Texter.colored(subtitle), fadeIn, stay, fadeOut);
+        if (Mentions.getInstance().isUseComponents()) {
+            PaperAdapter.sendTitle(target, title, subtitle, fadeIn, stay, fadeOut);
+        } else {
+            try {
+                Class.forName("org.bukkit.entity.Player.sendTitle");
+                target.sendTitle(Texter.colored(title), Texter.colored(subtitle), fadeIn, stay, fadeOut);
+            } catch (ClassNotFoundException e) {
+                target.sendTitle(Texter.colored(title), Texter.colored(subtitle));
+            }
+        }
     }
 
     private static void sendActionBar(Player player, Player target) {
@@ -61,14 +70,16 @@ public class MentionService {
         actionBar = actionBar.replace("%target%", target.getName());
         actionBar = actionBar.replace("%player%", player.getName());
 
-        target.sendActionBar(Texter.colored(actionBar));
+        if (Mentions.getInstance().isUseComponents()) {
+            PaperAdapter.sendActionBar(target, actionBar);
+        } else {
+            try {
+                Class.forName("org.bukkit.entity.Player.sendActionBar");
+                target.sendActionBar(Texter.colored(actionBar));
+            } catch (ClassNotFoundException e) {
+                ActionBarService.sendActionbar(target, Texter.colored(actionBar));
+            }
 
-        int delay = Mentions.getInstance().getConfig().getInt("actionbar.delay", 20);
-
-        if (delay > 0) {
-            player.getServer().getScheduler().runTaskLater(Mentions.getInstance(), () -> {
-                player.sendActionBar(Component.empty());
-            }, delay);
         }
     }
 
@@ -79,11 +90,16 @@ public class MentionService {
         try {
             parsedSound = Sound.valueOf(sound.toUpperCase().replace("-", "_").replace(" ", "_"));
         } catch (IllegalArgumentException e) {
-            return;
+            // default 1.8.8 sound
+            try {
+                parsedSound = Sound.valueOf("LEVEL_UP");
+            } catch (IllegalArgumentException ex) {
+                return;
+            }
         }
         float volume = (float) Mentions.getInstance().getConfig().getDouble("sound.volume", 1.0);
         float pitch = (float) Mentions.getInstance().getConfig().getDouble("sound.pitch", 1.0);
 
-        target.playSound(target, parsedSound, volume, pitch);
+        target.playSound(target.getLocation(), parsedSound, volume, pitch);
     }
 }

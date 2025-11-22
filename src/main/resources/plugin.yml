@@ -1,10 +1,11 @@
 name: Mentions
-version: '1.1'
+version: ${version}
 main: eu.xap3y.mentions.Mentions
-api-version: '1.20'
+api-version: '1.13'
 authors: [ XAP3Y ]
-description: Mention plugin for Minecore.
-website: https://minecore.cz
+description: ${description}
+website: ${website}
+folia-supported: true
 
 
 

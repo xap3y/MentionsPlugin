@@ -31,7 +31,14 @@ public class ConfigManager {
         if (!playerConfigYamlFile.exists()) {
             try {
                 Mentions.getInstance().saveResource("player-settings.yml", false);
-                Bukkit.getScheduler().runTaskLater(Mentions.getInstance(), ConfigManager::initStorageConfig, 40L);
+                if (Mentions.getInstance().isFolia()) {
+                    Mentions.getInstance().getServer().getGlobalRegionScheduler().runDelayed(Mentions.getInstance(), (e) -> {
+                        ConfigManager.initStorageConfig();
+                    }, 40L);
+                } else {
+                    Bukkit.getScheduler().runTaskLater(Mentions.getInstance(), ConfigManager::initStorageConfig, 40L);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
