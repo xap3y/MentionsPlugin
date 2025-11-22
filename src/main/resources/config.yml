@@ -29,7 +29,7 @@ chat:
 title:
     enabled: true
     title: "&a%player%" # Empty string = no title
-    subtitle: "&7tě zmínil v chatu!" # Empty string = no subtitle
+    subtitle: "&7mentioned you!" # Empty string = no subtitle
     fade-in: 20 # ticks
     stay: 60 # ticks
     fade-out: 20 # ticks
