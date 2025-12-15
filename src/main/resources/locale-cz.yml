@@ -1,0 +1,38 @@
+# To use this file, copy its content into 'plugins/Mentions/locale.yml'
+gui:
+    title: "&cMentions"
+    main_item: "&a&lMentions Nastavení"
+
+    on_text: "&aZapnuto"
+    off_text: "&cVypnuto"
+
+    click_to_toggle: "&eKlikni pro přepnutí"
+
+    close_button: "&cZavřít"
+
+    sound_button:
+        name: "&aZvuk upozornění"
+        lore:
+            - "&7Zapnout/vypnout zvukové upozornění"
+            - "&7při zmínce ve chatu."
+
+    title_button:
+        name: "&aTitle upozornění"
+        lore:
+            - "&7Zapnout/vypnout zobrazování title"
+            - "&7při zmínce ve chatu."
+
+    actionbar_button:
+        name: "&aActionbar upozornění"
+        lore:
+            - "&7Zapnout/vypnout actionbar upozornění"
+            - "&7při zmínce ve chatu."
+
+    admin_button:
+        name: "&cMožnost být zmíněn"
+        lore:
+            - "&7Zapnout/vypnout možnost být"
+            - "&7zmíněn ostatními hráči."
+            - "&8(Jen pro adminy)"
+
+gui-disabled: "&cGUI je vypnuto v konfiguraci!"

@@ -14,6 +14,9 @@ public class RootCommand {
             CommandSender p0
     ) {
         Mentions.getInstance().reloadConfig();
+        Mentions.getInstance().reloadMessages();
+        Mentions.getInstance().setGuiCloseButton();
+        Mentions.getTexter().setPrefix(Mentions.getInstance().getConfig().getString("prefix", "&7[&bmentions&7] &r"));
         Mentions.getTexter().response(p0, "&aReloaded config!");
     }
 
@@ -27,6 +30,19 @@ public class RootCommand {
             return;
         }
 
+        if (!Mentions.getInstance().getConfig().getBoolean("gui-enable", true)) {
+            Mentions.getTexter().response(p0, Mentions.getInstance().getMessageConfig().getString("gui-disabled", "&cThe GUI is disabled in the config!"));
+            return;
+        }
+
         new eu.xap3y.mentions.api.gui.SettingGui().build(p1).open(p1);
+    }
+
+    @Command("mentions ver")
+    public void version(
+            CommandSender p0
+    ) {
+
+        Mentions.getTexter().response(p0, "&aMentions version: &b" + Mentions.getInstance().getDescription().getVersion());
     }
 }

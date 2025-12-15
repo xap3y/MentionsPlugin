@@ -1,5 +1,7 @@
 package eu.xap3y.mentions.service;
 
+import eu.xap3y.mentions.Mentions;
+import eu.xap3y.mentions.adapter.HexUtil;
 import eu.xap3y.mentions.api.dto.TextModifierDto;
 import eu.xap3y.mentions.api.dto.TexterObjDto;
 import eu.xap3y.mentions.api.enums.DefaultFontInfo;
@@ -26,10 +28,19 @@ public class Texter {
         this.data = new TexterObjDto(prefix, debug, file);
     }
 
+    public void setPrefix(String prefix) {
+        data.setPrefix(prefix);
+    }
+
     public void response(CommandSender p0, String text, TextModifierDto modifiers) {
         String textToSend = modifiers.colored() ? colored(text) : text;
         String prefix = modifiers.withPrefix() ? colored(data.getPrefix()) : "";
-        p0.sendMessage(prefix + textToSend);
+        String textFinal = prefix + textToSend;
+        if (Mentions.getInstance().isUseComponents()) {
+            p0.sendMessage(HexUtil.parseText(textFinal));
+        } else {
+            p0.sendMessage(prefix + textToSend);
+        }
     }
 
     public void response(CommandSender p0, String text) {

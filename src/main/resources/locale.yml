@@ -1,0 +1,38 @@
+# Supports HEX colors using &#RRGGBB or MiniMessage format
+gui:
+    title: "&cMentions"
+    main_item: "&a&lMentions Settings"
+
+    on_text: "&aEnabled"
+    off_text: "&cDisabled"
+
+    click_to_toggle: "&eClick to toggle"
+
+    close_button: "&cClose"
+
+    sound_button:
+        name: "&aSound Notification"
+        lore:
+            - "&7Enable/disable sound notification"
+            - "&7on chat mention."
+
+    title_button:
+        name: "&aTitle Notification"
+        lore:
+            - "&7Enable/disable title notification"
+            - "&7on chat mention."
+
+    actionbar_button:
+        name: "&aActionbar Notification"
+        lore:
+            - "&7Enable/disable actionbar notification"
+            - "&7on chat mention."
+
+    admin_button:
+        name: "&cMentionable Option"
+        lore:
+            - "&7Enable/disable the option to be"
+            - "&7mentioned by other players."
+            - "&8&o(Admins only)"
+
+gui-disabled: "&cThe GUI is disabled in the config!"
