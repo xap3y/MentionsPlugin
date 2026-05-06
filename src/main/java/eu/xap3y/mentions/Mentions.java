@@ -7,6 +7,7 @@ import eu.xap3y.mentions.manager.CommandManager;
 import eu.xap3y.mentions.manager.ConfigManager;
 import eu.xap3y.mentions.service.Texter;
 import eu.xap3y.xagui.XaGui;
+import eu.xap3y.xagui.XaGuiPlugin;
 import eu.xap3y.xagui.models.GuiButton;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,7 +49,12 @@ public final class Mentions extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        xagui = new XaGui(this);
+        if ("@STANDALONE@".equals("true")) {
+            xagui = new XaGui(this);
+        } else {
+            xagui = XaGuiPlugin.getXaGui();
+        }
+
         try {
             // check if Sound.BLOCK_WOODEN_DOOR_CLOSE exists (1.16+)
             Sound sound = Sound.valueOf("BLOCK_WOODEN_DOOR_CLOSE");

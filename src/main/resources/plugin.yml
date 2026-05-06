@@ -7,5 +7,5 @@ description: ${description}
 website: ${website}
 folia-supported: true
 
-
+${dependClause}
 
