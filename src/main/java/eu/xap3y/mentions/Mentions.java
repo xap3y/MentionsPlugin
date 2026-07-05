@@ -8,12 +8,12 @@ import eu.xap3y.mentions.manager.ConfigManager;
 import eu.xap3y.mentions.service.Texter;
 import eu.xap3y.xagui.XaGui;
 import eu.xap3y.xagui.models.GuiButton;
+import org.incendo.cloud.paper.util.sender.Source;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -58,7 +58,7 @@ public final class Mentions extends JavaPlugin {
             //xagui.setCloseButtonSound(Sound.BLOCK_CHEST_CLOSE);
         }
 
-        CommandManagerIface<CommandSender> commandManager = new CommandManager(this);
+        CommandManagerIface<Source> commandManager = new CommandManager(this);
         commandManager.parse(new RootCommand());
 
         ConfigManager.reloadConfig();

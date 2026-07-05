@@ -1,32 +1,24 @@
 package eu.xap3y.mentions.manager;
 
 import eu.xap3y.mentions.api.iface.CommandManagerIface;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.incendo.cloud.SenderMapper;
 import org.incendo.cloud.annotations.AnnotationParser;
-import org.incendo.cloud.bukkit.CloudBukkitCapabilities;
 import org.incendo.cloud.execution.ExecutionCoordinator;
-import org.incendo.cloud.paper.LegacyPaperCommandManager;
+import org.incendo.cloud.paper.PaperCommandManager;
+import org.incendo.cloud.paper.util.sender.PaperSimpleSenderMapper;
+import org.incendo.cloud.paper.util.sender.Source;
 import org.jetbrains.annotations.NotNull;
 
-public class CommandManager implements CommandManagerIface<CommandSender> {
+public class CommandManager implements CommandManagerIface<Source> {
 
-    private final AnnotationParser<CommandSender> parser;
+    private final AnnotationParser<Source> parser;
 
     public CommandManager(JavaPlugin instance) {
-        ExecutionCoordinator<CommandSender> coordinator = ExecutionCoordinator.asyncCoordinator();
-        LegacyPaperCommandManager<CommandSender> manager = new LegacyPaperCommandManager<CommandSender>(
-                instance,
-                coordinator,
-                SenderMapper.identity()
-        );
-        if (manager.hasCapability(CloudBukkitCapabilities.NATIVE_BRIGADIER)) {
-            manager.registerBrigadier();
-            manager.brigadierManager().setNativeNumberSuggestions(false);
-        }
+        PaperCommandManager<Source> manager = PaperCommandManager.builder(PaperSimpleSenderMapper.simpleSenderMapper())
+                .executionCoordinator(ExecutionCoordinator.asyncCoordinator())
+                .buildOnEnable(instance);
 
-        parser = new AnnotationParser<>(manager, CommandSender.class);
+        parser = new AnnotationParser<>(manager, Source.class);
     }
 
     @Override
@@ -35,7 +27,7 @@ public class CommandManager implements CommandManagerIface<CommandSender> {
     }
 
     @Override
-    public AnnotationParser<CommandSender> getParser() {
+    public AnnotationParser<Source> getParser() {
         return parser;
     }
 }
