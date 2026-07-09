@@ -33,7 +33,7 @@ public class ChatListener implements Listener {
             Matcher matcher = pattern.matcher(message);
 
             while (matcher.find()) {
-                if (!ConfigManager.getSetting(SettingType.ABLE_TO_MENTION, target.getUniqueId())) return;
+                if (!ConfigManager.getSetting(SettingType.ABLE_TO_MENTION, target.getUniqueId()) && target.hasPermission("mentions.admin")) return;
                 // get last color codes before mention
                 String before = message.substring(0, matcher.start());
                 String activeColors = ChatColor.getLastColors(Texter.colored(before));

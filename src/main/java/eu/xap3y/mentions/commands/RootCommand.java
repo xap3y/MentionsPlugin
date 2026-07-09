@@ -37,4 +37,12 @@ public class RootCommand {
 
         new eu.xap3y.mentions.api.gui.SettingGui().build(p1).open(p1);
     }
+
+    @Command("mentions ver")
+    public void version(
+            CommandSender p0
+    ) {
+
+        Mentions.getTexter().response(p0, "&aMentions version: &b" + Mentions.getInstance().getDescription().getVersion());
+    }
 }
