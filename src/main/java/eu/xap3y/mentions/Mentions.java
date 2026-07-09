@@ -59,7 +59,7 @@ public final class Mentions extends JavaPlugin {
             // check if Sound.BLOCK_WOODEN_DOOR_CLOSE exists (1.16+)
             Sound sound = Sound.valueOf("BLOCK_WOODEN_DOOR_CLOSE");
             xagui.setCloseButtonSound(sound);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IncompatibleClassChangeError e) {
             // fallback to Sound.WOODEN_DOOR_CLOSE for older versions
             //xagui.setCloseButtonSound(Sound.BLOCK_CHEST_CLOSE);
         }
