@@ -6,6 +6,12 @@ mention-prefix: "@" # Etc.: @XAP3Y
 
 gui-enable: true # Allow GUI to manage mention notifications using /mentions
 
+metrics: true # Enable bStats metrics
+
+multi-mentions: true # Allow multiple mentions in one message
+
+self-mention: false # Allow players to mention themselves
+
 # Variables:
 # %player% - name of the player who mentioned you
 # %target% - name of the player who was mentioned
@@ -33,3 +39,9 @@ title:
     fade-in: 20 # ticks
     stay: 60 # ticks
     fade-out: 20 # ticks
+
+exclusion:
+    enabled: false
+    case-sensitive: false
+    players:
+        - "xap3y"

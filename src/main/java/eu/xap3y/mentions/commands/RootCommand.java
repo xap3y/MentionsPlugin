@@ -16,6 +16,7 @@ public class RootCommand {
         Mentions.getInstance().reloadConfig();
         Mentions.getInstance().reloadMessages();
         Mentions.getInstance().setGuiCloseButton();
+        Mentions.getInstance().fixConfig();
         Mentions.getTexter().setPrefix(Mentions.getInstance().getConfig().getString("prefix", "&7[&bmentions&7] &r"));
         Mentions.getTexter().response(p0, "&aReloaded config!");
     }
@@ -25,10 +26,12 @@ public class RootCommand {
             CommandSender p0
     ) {
 
-        if (!(p0 instanceof Player p1)) {
+        if (!(p0 instanceof Player)) {
             Mentions.getTexter().response(p0, "&cThis command can only be executed by a player!");
             return;
         }
+
+        Player p1 = (Player) p0;
 
         if (!Mentions.getInstance().getConfig().getBoolean("gui-enable", true)) {
             Mentions.getTexter().response(p0, Mentions.getInstance().getMessageConfig().getString("gui-disabled", "&cThe GUI is disabled in the config!"));

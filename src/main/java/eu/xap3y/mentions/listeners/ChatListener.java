@@ -22,35 +22,50 @@ public class ChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         String message = event.getMessage();
 
+        boolean isAtleastOneMention = false;
+
         String prefix = Mentions.getInstance().getConfig().getString("mention-prefix", "@");
         boolean enabledReplacer = Mentions.getInstance().getConfig().getBoolean("chat.enabled", false);
+        boolean multiMentions = Mentions.getInstance().getConfig().getBoolean("multi-mentions", true);
+        boolean selfMention = Mentions.getInstance().getConfig().getBoolean("self-mention", false);
         String replacer = enabledReplacer ? Mentions.getInstance().getConfig().getString("chat.replace", " ") : null;
 
         for (Player target : Bukkit.getOnlinePlayers()) {
+            if (!multiMentions && isAtleastOneMention) break;
+
+            // Skip self if self-mentioning is disabled
+            if (!selfMention && target.getUniqueId().equals(event.getPlayer().getUniqueId())) {
+                continue;
+            }
+
             String name = target.getName();
             String regex = "(?i)(?<!\\w)" + Pattern.quote(prefix) + Pattern.quote(name) + "(?!\\w)";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(message);
 
-            while (matcher.find()) {
-                if (!ConfigManager.getSetting(SettingType.ABLE_TO_MENTION, target.getUniqueId()) && target.hasPermission("mentions.admin")) return;
-                // get last color codes before mention
+            if (matcher.find()) {
+                // Check permissions/settings - use continue instead of return!
+                if (!ConfigManager.getSetting(SettingType.ABLE_TO_MENTION, target.getUniqueId()) && target.hasPermission("mentions.admin")) {
+                    continue;
+                }
+                if (!ConfigManager.isAbleToBeMentionedFromConfig(target.getName())) {
+                    continue;
+                }
+
+                // Get last color codes before mention
                 String before = message.substring(0, matcher.start());
                 String activeColors = ChatColor.getLastColors(Texter.colored(before));
 
-                String replacement;
-                if (enabledReplacer) {
-                    replacement = Texter.colored(replacer.replace("%nick%", "&a&l" + name));
-                } else {
-                    replacement = Texter.colored("&a&l" + name);
-                }
+                String replacement = enabledReplacer
+                        ? Texter.colored(replacer.replace("%nick%", "&a&l" + name))
+                        : Texter.colored("&a&l" + name);
 
                 replacement += activeColors;
 
-                message = matcher.replaceFirst(Matcher.quoteReplacement(replacement));
-                matcher = pattern.matcher(message);
-
+                message = matcher.replaceAll(Matcher.quoteReplacement(replacement));
                 MentionService.run(event.getPlayer(), target);
+
+                isAtleastOneMention = true;
             }
         }
 

@@ -5,6 +5,8 @@ import eu.xap3y.mentions.commands.RootCommand;
 import eu.xap3y.mentions.listeners.ChatListener;
 import eu.xap3y.mentions.manager.CommandManager;
 import eu.xap3y.mentions.manager.ConfigManager;
+import eu.xap3y.mentions.service.MentionService;
+import eu.xap3y.mentions.service.Metrics;
 import eu.xap3y.mentions.service.Texter;
 import eu.xap3y.xagui.XaGui;
 import eu.xap3y.xagui.XaGuiPlugin;
@@ -44,6 +46,9 @@ public final class Mentions extends JavaPlugin {
     @Getter
     @Setter
     private YamlConfiguration messageConfig;
+
+    @Getter
+    private Metrics metrics;
 
     @Override
     public void onEnable() {
@@ -97,6 +102,27 @@ public final class Mentions extends JavaPlugin {
 
         reloadMessages();
         setGuiCloseButton();
+
+        if (getConfig().getBoolean("metrics", true)) {
+            int pluginId = 33042;
+            metrics = new Metrics(this, pluginId);
+
+            metrics.addCustomChart(
+                new Metrics.SimplePie("use_components", () -> Boolean.toString(useComponents))
+            );
+
+            // total mention count
+            metrics.addCustomChart(
+                new Metrics.SingleLineChart("total_mentions", MentionService::getTotalMentions)
+            );
+        }
+
+        fixConfig();
+    }
+
+    public void fixConfig() {
+        getConfig().options().copyDefaults(true);
+        saveConfig();
     }
 
     public void reloadMessages() {

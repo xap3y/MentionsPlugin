@@ -6,11 +6,11 @@ plugins {
 }
 
 group = 'eu.xap3y'
-version = '1.3.2'
+version = '1.3.4'
 def baseCoordinates = "Mentions"
 
-def pluginDesc = "Mention plugin for Minecore."
-def pluginSite = "https://minecore.cz"
+def pluginDesc = "Mention plugin"
+def pluginSite = "https://plugins.xap3y.eu/mentions"
 
 def isStandalone = project.hasProperty('standalone')
 
@@ -33,9 +33,9 @@ repositories {
     }
 }
 
-def xaguiDep = 'eu.xap3y:xagui:1.5.0'
-def cloudPaperDep = 'org.incendo:cloud-paper:2.0.0-beta.17'
-def cloudAnnotationsDep = 'org.incendo:cloud-annotations:2.0.0'
+def xaguiDep = 'eu.xap3y:xagui:1.5.1'
+def cloudPaperDep = 'org.incendo:cloud-paper:2.0.0'
+def cloudAnnotationsDep = 'org.incendo:cloud-annotations:2.1.0'
 
 configurations {
     implConditional
@@ -43,8 +43,6 @@ configurations {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
-
-    implementation 'org.bstats:bstats-bukkit:3.2.1'
 
     implConditional xaguiDep
     implConditional cloudPaperDep
@@ -103,8 +101,6 @@ tasks {
     shadowJar {
         archiveClassifier = isStandalone ? 'standalone' : 'dependent'
         archiveBaseName = baseCoordinates
-
-        relocate 'org.bstats', 'eu.xap3y.mentions.libs.bstats'
 
         if (isStandalone) {
             relocate 'org.incendo.cloud', 'eu.xap3y.mentions.libs.cloud'

@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 public class ConfigManager {
@@ -64,5 +65,20 @@ public class ConfigManager {
     public static boolean getSetting(SettingType type, UUID playerUUID) {
         String path = playerUUID.toString() + "." + type.name().toLowerCase();
         return playerConfig.getBoolean(path, true);
+    }
+
+    public static boolean isAbleToBeMentionedFromConfig(String playerName) {
+        boolean enabled = Mentions.getInstance().getConfig().getBoolean("exclusion.enabled", false);
+        if (!enabled) return true;
+
+        boolean caseSensitive = Mentions.getInstance().getConfig().getBoolean("exclusion.case-sensitive", false);
+
+        List<String> excludedPlayers = Mentions.getInstance().getConfig().getStringList("exclusion.players");
+
+        if (caseSensitive) {
+            return !excludedPlayers.contains(playerName);
+        } else {
+            return excludedPlayers.stream().noneMatch(p -> p.equalsIgnoreCase(playerName));
+        }
     }
 }

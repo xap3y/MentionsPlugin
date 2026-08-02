@@ -4,13 +4,20 @@ import eu.xap3y.mentions.Mentions;
 import eu.xap3y.mentions.adapter.PaperAdapter;
 import eu.xap3y.mentions.api.enums.SettingType;
 import eu.xap3y.mentions.manager.ConfigManager;
+import lombok.Getter;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class MentionService {
 
+    @Getter
+    private static int totalMentions = 0;
+
     public static void run(Player mentioner, Player mentioned) {
+
+        incrementTotalMentions();
+
         FileConfiguration cfg = Mentions.getInstance().getConfig();
 
         boolean useSound = cfg.getBoolean("sound.enabled", false);
@@ -101,5 +108,9 @@ public class MentionService {
         float pitch = (float) Mentions.getInstance().getConfig().getDouble("sound.pitch", 1.0);
 
         target.playSound(target.getLocation(), parsedSound, volume, pitch);
+    }
+
+    private static void incrementTotalMentions() {
+        totalMentions++;
     }
 }

@@ -5,6 +5,12 @@ mention-prefix: "@" # Napr.: @ownercz
 
 gui-enable: true # Povolit GUI pro správu zmínek pomocí /mentions
 
+metrics: true # Enable bStats metrics
+
+multi-mentions: true # Povolit více zmínek v jedné zprávě
+
+self-mention: false # Povolit hráčům zmínit sami sebe
+
 # Variably:
 # %player% - jméno hráče, který tě zmínil
 # %target% - jméno hráče, který byl zmíněn
@@ -32,3 +38,9 @@ title:
     fade-in: 20 # ticks
     stay: 60 # ticks
     fade-out: 20 # ticks
+
+exclusion:
+    enabled: false
+    case-sensitive: false
+    players:
+        - "xap3y"
