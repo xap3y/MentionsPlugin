@@ -1,1 +1,5 @@
 rootProject.name = 'Mentions'
+
+include 'core'
+include 'spigot'
+include 'paper'

@@ -1,4 +1,6 @@
 package eu.xap3y.mentions;
+import eu.xap3y.mentions.adapter.PlatformAdapter;
+import eu.xap3y.mentions.adapter.SpigotAdapter;
 
 import eu.xap3y.mentions.api.iface.CommandManagerIface;
 import eu.xap3y.mentions.commands.RootCommand;
@@ -50,6 +52,9 @@ public final class Mentions extends JavaPlugin {
     @Getter
     private Metrics metrics;
 
+    @Getter
+    private PlatformAdapter platformAdapter;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -58,6 +63,19 @@ public final class Mentions extends JavaPlugin {
             xagui = new XaGui(this);
         } else {
             xagui = XaGuiPlugin.getXaGui();
+        }
+
+        try {
+            Class.forName("net.kyori.adventure.text.Component");
+            useComponents = true;
+            try {
+                platformAdapter = (PlatformAdapter) Class.forName("eu.xap3y.mentions.adapter.PaperAdapter").getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                platformAdapter = new SpigotAdapter();
+            }
+        } catch (ClassNotFoundException e) {
+            useComponents = false;
+            platformAdapter = new SpigotAdapter();
         }
 
         try {
@@ -93,12 +111,6 @@ public final class Mentions extends JavaPlugin {
         org.bukkit.permissions.Permission perm = new org.bukkit.permissions.Permission("mentions.admin", "Unlock setting option in GUI to toggle if user can be mentioned or not", org.bukkit.permissions.PermissionDefault.OP);
         Bukkit.getPluginManager().addPermission(perm);
 
-        try {
-            Class.forName("net.kyori.adventure.text.Component");
-            useComponents = true;
-        } catch (ClassNotFoundException e) {
-            useComponents = false;
-        }
 
         reloadMessages();
         setGuiCloseButton();

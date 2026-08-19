@@ -90,14 +90,38 @@ public class SettingGui extends VirtualMenu<Player> {
 
         String serverVer = Mentions.getInstance().getServer().getVersion();
         boolean isOld = serverVer.contains("1.8");
-        boolean isMid = serverVer.contains("1.9") || serverVer.contains("1.10") || serverVer.contains("1.11") || serverVer.contains("1.12");
 
+        boolean isMid = false;
+
+        try {
+            String mcVersion = serverVer.substring(
+                    serverVer.indexOf("MC: ") + 4,
+                    serverVer.indexOf(")")
+            );
+
+            String[] parts = mcVersion.split("\\.");
+
+            int major = Integer.parseInt(parts[0]);
+            int minor = Integer.parseInt(parts[1]);
+
+            isMid = major == 1 && minor >= 9 && minor <= 12;
+        } catch (Exception ignored) {
+        }
+
+        boolean finalIsMid = isMid;
         gui.setSlot(45, new GuiButton(Material.JUKEBOX)
                 .setName(Mentions.getInstance().getMessageConfig().getString("sound-gui.sound_choice_button.name", "&aSound choice"))
                 .setLoreList(Mentions.getInstance().getMessageConfig().getStringList("sound-gui.sound_choice_button.lore"))
                 .withListener(event -> {
                     gui.close(event.getPlayer());
-                    VirtualMenu<Player> guiToOpen = isOld ? new LegacySoundGui() : isMid ? new MidSoundGui() : new SoundGui();
+                    VirtualMenu<Player> guiToOpen;
+                    if (isOld) {
+                        guiToOpen = new LegacySoundGui();
+                    } else if (finalIsMid) {
+                        guiToOpen = new MidSoundGui();
+                    } else {
+                        guiToOpen = new SoundGui();
+                    }
                     guiToOpen.build(event.getPlayer()).open(event.getPlayer());
                 }));
 

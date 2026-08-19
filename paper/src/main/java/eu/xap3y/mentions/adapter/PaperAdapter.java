@@ -10,21 +10,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PaperAdapter {
+public class PaperAdapter implements PlatformAdapter {
 
-    public static void setName(ItemMeta meta, String name) {
+    public void setName(ItemMeta meta, String name) {
         meta.displayName(HexUtil.parseText(name));
     }
 
-    public static void setLoreList(ItemMeta meta, List<String> lore) {
+    public void setLoreList(ItemMeta meta, List<String> lore) {
         meta.lore(lore.stream().map(HexUtil::parseText).toList());
     }
 
-    public static @NotNull Inventory createInventory(GuiMenu holder, int size, String title) {
+    public @NotNull Inventory createInventory(GuiMenu holder, int size, String title) {
         return Bukkit.createInventory(holder, size, HexUtil.parseText(title));
     }
 
-    public static void sendTitle(Player player, String titleText, String subtitle, int fadeIn, int stay, int fadeOut) {
+    @Override
+    public void sendMessage(org.bukkit.command.CommandSender sender, String message) {
+        sender.sendMessage(HexUtil.parseText(message));
+    }
+    public void sendTitle(Player player, String titleText, String subtitle, int fadeIn, int stay, int fadeOut) {
         Title title = Title.title(
                 HexUtil.parseText(titleText),
                 HexUtil.parseText(subtitle),
@@ -38,7 +42,7 @@ public class PaperAdapter {
     }
 
     // action bar
-    public static void sendActionBar(Player player, String message) {
+    public void sendActionBar(Player player, String message) {
         player.sendActionBar(HexUtil.parseText(message));
     }
 }

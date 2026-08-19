@@ -37,7 +37,7 @@ public class Texter {
         String prefix = modifiers.withPrefix() ? colored(data.getPrefix()) : "";
         String textFinal = prefix + textToSend;
         if (Mentions.getInstance().isUseComponents()) {
-            p0.sendMessage(HexUtil.parseText(textFinal));
+            Mentions.getInstance().getPlatformAdapter().sendMessage(p0, textFinal);
         } else {
             p0.sendMessage(prefix + textToSend);
         }

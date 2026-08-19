@@ -1,7 +1,6 @@
 package eu.xap3y.mentions.service;
 
 import eu.xap3y.mentions.Mentions;
-import eu.xap3y.mentions.adapter.PaperAdapter;
 import eu.xap3y.mentions.api.enums.SettingType;
 import eu.xap3y.mentions.manager.ConfigManager;
 import lombok.Getter;
@@ -56,7 +55,7 @@ public class MentionService {
         subtitle = subtitle.replaceAll("%player%", player.getName());
 
         if (Mentions.getInstance().isUseComponents()) {
-            PaperAdapter.sendTitle(target, title, subtitle, fadeIn, stay, fadeOut);
+            Mentions.getInstance().getPlatformAdapter().sendTitle(target, title, subtitle, fadeIn, stay, fadeOut);
         } else {
             try {
                 Class.forName("org.bukkit.entity.Player.sendTitle");
@@ -78,11 +77,11 @@ public class MentionService {
         actionBar = actionBar.replace("%player%", player.getName());
 
         if (Mentions.getInstance().isUseComponents()) {
-            PaperAdapter.sendActionBar(target, actionBar);
+            Mentions.getInstance().getPlatformAdapter().sendActionBar(target, actionBar);
         } else {
             try {
                 Class.forName("org.bukkit.entity.Player.sendActionBar");
-                target.sendActionBar(Texter.colored(actionBar));
+                Mentions.getInstance().getPlatformAdapter().sendActionBar(target, Texter.colored(actionBar));
             } catch (ClassNotFoundException e) {
                 ActionBarService.sendActionbar(target, Texter.colored(actionBar));
             }

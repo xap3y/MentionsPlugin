@@ -5,13 +5,13 @@ import eu.xap3y.mentions.manager.ConfigManager;
 import eu.xap3y.xagui.VirtualMenu;
 import eu.xap3y.xagui.interfaces.GuiMenuInterface;
 import eu.xap3y.xagui.models.GuiButton;
-import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SoundGui extends VirtualMenu<Player> {
@@ -75,30 +75,43 @@ public class SoundGui extends VirtualMenu<Player> {
     }
 
     public static List<MentionSound> getSounds() {
-        return List.of(
-                new MentionSound(Material.NOTE_BLOCK, "button", Sound.BLOCK_WOODEN_BUTTON_CLICK_ON),
-                new MentionSound(Material.NOTE_BLOCK, "xp", Sound.ENTITY_EXPERIENCE_ORB_PICKUP),
-                new MentionSound(Material.NOTE_BLOCK, "villager", Sound.ENTITY_VILLAGER_AMBIENT),
-                new MentionSound(Material.NOTE_BLOCK, "lava_pop", Sound.BLOCK_LAVA_POP),
-                new MentionSound(Material.NOTE_BLOCK, "pressure_plate", Sound.BLOCK_STONE_PRESSURE_PLATE_CLICK_ON),
-                new MentionSound(Material.NOTE_BLOCK, "ui_click", Sound.UI_BUTTON_CLICK),
-                new MentionSound(Material.NOTE_BLOCK, "anvil", Sound.BLOCK_ANVIL_LAND),
 
-                // noteblocks
+        List<MentionSound> sounds = new ArrayList<>();
 
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_bass", Sound.BLOCK_NOTE_BLOCK_BASS),
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_bell", Sound.BLOCK_NOTE_BLOCK_BELL),
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_chime", Sound.BLOCK_NOTE_BLOCK_CHIME),
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_flute", Sound.BLOCK_NOTE_BLOCK_FLUTE),
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_guitar", Sound.BLOCK_NOTE_BLOCK_GUITAR),
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_hat", Sound.BLOCK_NOTE_BLOCK_HAT),
-                new MentionSound(Material.NOTE_BLOCK, "noteblock_pling", Sound.BLOCK_NOTE_BLOCK_PLING)
-        );
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "button", Sound.BLOCK_WOODEN_BUTTON_CLICK_ON));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "xp", Sound.ENTITY_EXPERIENCE_ORB_PICKUP));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "villager", Sound.ENTITY_VILLAGER_AMBIENT));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "lava_pop", Sound.BLOCK_LAVA_POP));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "pressure_plate", Sound.BLOCK_STONE_PRESSURE_PLATE_CLICK_ON));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "ui_click", Sound.UI_BUTTON_CLICK));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "anvil", Sound.BLOCK_ANVIL_LAND));
+
+        // noteblocks
+
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_bass", Sound.BLOCK_NOTE_BLOCK_BASS));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_bell", Sound.BLOCK_NOTE_BLOCK_BELL));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_chime", Sound.BLOCK_NOTE_BLOCK_CHIME));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_flute", Sound.BLOCK_NOTE_BLOCK_FLUTE));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_guitar", Sound.BLOCK_NOTE_BLOCK_GUITAR));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_hat", Sound.BLOCK_NOTE_BLOCK_HAT));
+        sounds.add(new MentionSound(Material.NOTE_BLOCK, "noteblock_pling", Sound.BLOCK_NOTE_BLOCK_PLING));
+
+        return sounds;
     }
 
-    public record MentionSound(
-            Material material,
-            String name,
-            Sound sound
-    ) { }
+    public static class MentionSound {
+        private final Material material;
+        private final String name;
+        private final Sound sound;
+        
+        public MentionSound(Material material, String name, Sound sound) {
+            this.material = material;
+            this.name = name;
+            this.sound = sound;
+        }
+        
+        public Material material() { return material; }
+        public String name() { return name; }
+        public Sound sound() { return sound; }
+    }
 }

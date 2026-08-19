@@ -40,9 +40,13 @@ public class ConfigManager {
             try {
                 Mentions.getInstance().saveResource("player-settings.yml", false);
                 if (Mentions.getInstance().isFolia()) {
-                    Mentions.getInstance().getServer().getGlobalRegionScheduler().runDelayed(Mentions.getInstance(), (e) -> {
-                        ConfigManager.initStorageConfig();
-                    }, 40L);
+                    try {
+                        Object scheduler = Mentions.getInstance().getServer().getClass().getMethod("getGlobalRegionScheduler").invoke(Mentions.getInstance().getServer());
+                        scheduler.getClass().getMethod("runDelayed", org.bukkit.plugin.Plugin.class, java.util.function.Consumer.class, long.class)
+                                .invoke(scheduler, Mentions.getInstance(), (java.util.function.Consumer<?>) (task) -> ConfigManager.initStorageConfig(), 40L);
+                    } catch (Exception ex) {
+                        Bukkit.getScheduler().runTaskLater(Mentions.getInstance(), ConfigManager::initStorageConfig, 40L);
+                    }
                 } else {
                     Bukkit.getScheduler().runTaskLater(Mentions.getInstance(), ConfigManager::initStorageConfig, 40L);
                 }
