@@ -33,7 +33,7 @@ repositories {
     }
 }
 
-def xaguiDep = 'eu.xap3y:xagui:1.5.1'
+def xaguiDep = 'eu.xap3y:xagui:1.5.3'
 def cloudPaperDep = 'org.incendo:cloud-paper:2.0.0'
 def cloudAnnotationsDep = 'org.incendo:cloud-annotations:2.1.0'
 

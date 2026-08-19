@@ -16,6 +16,14 @@ gui:
             - "&7Zapnout/vypnout zvukové upozornění"
             - "&7při zmínce ve chatu."
 
+    sound_choice_button:
+        name: "&aVýběr zvuku"
+        lore:
+            - "&7Vybrat zvuk, který se přehraje"
+            - "&7při zmínce ve chatu."
+            - ""
+            - "&eKlikni pro otevření"
+
     title_button:
         name: "&aTitle upozornění"
         lore:
@@ -36,3 +44,28 @@ gui:
             - "&8(Jen pro adminy)"
 
 gui-disabled: "&cGUI je vypnuto v konfiguraci!"
+
+sound-gui:
+    title: "&cVýběr zvuku"
+    main_item: "&aNastavení notifikačního zvuku"
+
+    back_button: "&cZpět"
+
+    choice:
+        name: "&fZvuk &e#{number}"
+        lore:
+            - " "
+            - "&eLevý-Click &7pro přehání zvuku"
+            - "&aPravý-Click &7pro výběr"
+
+        selected: "&a&lVybraný"
+
+    sound-chosen: "&aZvolil jsi zvuk &e{sound}&a!"
+
+    sound_choice_button:
+        name: "&aVýběr zvuku"
+        lore:
+            - "&7Vyber si zvuk oznámení"
+            - "&7při zmínce v chatu."
+            - ""
+            - "&eKlikni pro otevření"

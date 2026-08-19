@@ -91,7 +91,50 @@ public class MentionService {
     }
 
     private static void sendSound(Player player, Player target) {
-        String sound = Mentions.getInstance().getConfig().getString("sound.sound", "entity.player.levelup");
+
+        float volume = (float) Mentions.getInstance().getConfig().getDouble("sound.volume", 1.0);
+        float pitch = (float) Mentions.getInstance().getConfig().getDouble("sound.pitch", 1.0);
+
+        if (ConfigManager.getPlayerSoundMap().get(target.getUniqueId()) != null) {
+            target.playSound(target.getLocation(), ConfigManager.getPlayerSoundMap().get(target.getUniqueId()), volume, pitch);
+            return;
+        }
+
+        String sound = Mentions.getInstance().getConfig().getString("sound.sound", "LAVA_POP");
+
+        String serverVer = Mentions.getInstance().getServer().getVersion();
+        boolean isLegacy = serverVer.contains("1.8");
+
+        if (isLegacy) {
+            switch (sound) {
+                case "ENTITY_EXPERIENCE_ORB_PICKUP":
+                    sound = "ORB_PICKUP";
+                    break;
+                case "ENTITY_PLAYER_LEVELUP":
+                    sound = "LEVEL_UP";
+                    break;
+                case "ENTITY_ITEM_PICKUP":
+                    sound = "ITEM_PICKUP";
+                    break;
+                case "ENTITY_ARROW_HIT":
+                    sound = "ARROW_HIT";
+                    break;
+                case "ENTITY_ARROW_SHOOT":
+                    sound = "SHOOT_ARROW";
+                    break;
+                case "ENTITY_FIREWORK_ROCKET_LAUNCH":
+                    sound = "FIREWORK_LAUNCH";
+                    break;
+                case "ENTITY_FIREWORK_ROCKET_BLAST":
+                    sound = "FIREWORK_BLAST";
+                    break;
+                case "ENTITY_FIREWORK_ROCKET_TWINKLE":
+                    sound = "FIREWORK_TWINKLE";
+                    break;
+                default:
+                    // do nothing, use the original sound
+            }
+        }
 
         Sound parsedSound;
         try {
@@ -104,8 +147,6 @@ public class MentionService {
                 return;
             }
         }
-        float volume = (float) Mentions.getInstance().getConfig().getDouble("sound.volume", 1.0);
-        float pitch = (float) Mentions.getInstance().getConfig().getDouble("sound.pitch", 1.0);
 
         target.playSound(target.getLocation(), parsedSound, volume, pitch);
     }

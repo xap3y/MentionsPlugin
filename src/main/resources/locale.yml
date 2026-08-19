@@ -16,6 +16,14 @@ gui:
             - "&7Enable/disable sound notification"
             - "&7on chat mention."
 
+    sound_choice_button:
+        name: "&aSound Choice"
+        lore:
+            - "&7Choose the sound to play"
+            - "&7on chat mention."
+            - ""
+            - "&eClick to open"
+
     title_button:
         name: "&aTitle Notification"
         lore:
@@ -36,3 +44,27 @@ gui:
             - "&8&o(Admins only)"
 
 gui-disabled: "&cThe GUI is disabled in the config!"
+
+sound-gui:
+    title: "&cSound Choice"
+    main_item: "&aNotify Sound Settings"
+
+    back_button: "&cBack"
+
+    choice:
+        name: "&fSound &e#{number}"
+        lore:
+            - " "
+            - "&eLeft-Click &7to play this sound."
+            - "&aRight-Click &7to select this sound."
+        selected: "&aSelected"
+
+    sound-chosen: "&aYou have chosen the sound &e{sound}&a!"
+
+    sound_choice_button:
+        name: "&aSound Choice"
+        lore:
+            - "&7Choose the sound to play"
+            - "&7on chat mention."
+            - ""
+            - "&eClick to open"

@@ -22,7 +22,7 @@ actionbar:
 
 sound:
     enabled: true
-    sound: "BLOCK_NOTE_BLOCK_BELL" # https://helpch.at/docs/1.20/org/bukkit/Sound.html
+    sound: "ENTITY_EXPERIENCE_ORB_PICKUP" # https://helpch.at/docs/1.20/org/bukkit/Sound.html
     volume: 1.0 # 0.0 - 1.0
     pitch: 1.0 # 0.5 - 2.0
 

@@ -88,6 +88,20 @@ public class SettingGui extends VirtualMenu<Player> {
             ));
         }
 
+        String serverVer = Mentions.getInstance().getServer().getVersion();
+        boolean isOld = serverVer.contains("1.8");
+        boolean isMid = serverVer.contains("1.9") || serverVer.contains("1.10") || serverVer.contains("1.11") || serverVer.contains("1.12");
+
+        gui.setSlot(45, new GuiButton(Material.JUKEBOX)
+                .setName(Mentions.getInstance().getMessageConfig().getString("sound-gui.sound_choice_button.name", "&aSound choice"))
+                .setLoreList(Mentions.getInstance().getMessageConfig().getStringList("sound-gui.sound_choice_button.lore"))
+                .withListener(event -> {
+                    gui.close(event.getPlayer());
+                    VirtualMenu<Player> guiToOpen = isOld ? new LegacySoundGui() : isMid ? new MidSoundGui() : new SoundGui();
+                    guiToOpen.build(event.getPlayer()).open(event.getPlayer());
+                }));
+
+
         return gui;
     }
 

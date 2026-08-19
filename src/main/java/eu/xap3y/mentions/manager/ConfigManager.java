@@ -5,10 +5,14 @@ import eu.xap3y.mentions.api.enums.SettingType;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ConfigManager {
@@ -16,6 +20,9 @@ public class ConfigManager {
     @Getter
     @Setter
     private static YamlConfiguration playerConfig;
+
+    @Getter
+    private static final Map<UUID, Sound> playerSoundMap = new HashMap<>();
 
     private static final File playerConfigYamlFile = new File(Mentions.getInstance().getDataFolder(), "player-settings.yml");
 
@@ -60,6 +67,18 @@ public class ConfigManager {
         String path = playerUUID.toString() + "." + type.name().toLowerCase();
         playerConfig.set(path, value);
         savePlayerConfig();
+    }
+
+    public static void setSettingSound(UUID playerUUID, String soundName) {
+        String path = playerUUID.toString() + ".sound";
+        playerConfig.set(path, soundName);
+        savePlayerConfig();
+    }
+
+    @Nullable
+    public static String getSettingSound(UUID playerUUID) {
+        String path = playerUUID.toString() + ".sound";
+        return playerConfig.getString(path);
     }
 
     public static boolean getSetting(SettingType type, UUID playerUUID) {
