@@ -17,11 +17,11 @@ jobs:
                   git config --global user.email "radim@lipovcan.cz"
             - name: Check out repository code
               uses: actions/checkout@v4
-            - name: Build | Gradle buildAll
+            - name: Build | Gradle build dependent jar
               run: |
                   ls -lah
                   chmod +x ./gradlew
-                  ./gradlew clean buildAll && ls -lah && ls */ -lah && ls */* -lah&& ls */*/* -lah
+                  ./gradlew clean shadowJar && ls -lah && ls */ -lah && ls */* -lah&& ls */*/* -lah
            
             - name: Release
               uses: https://git.lipovcan.cz/Upstream/gitea-release-action.git@v1
@@ -31,4 +31,4 @@ jobs:
                   build/libs/*.jar
             - name: Build | publish jar
               run:  |
-                  curl --insecure --user username:mypass -T build/libs/Mentions-1.4.0-dependent.jar ftp://192.168.10.133:/
+                  curl --insecure --user username:mypass -T build/libs/*.jar ftp://192.168.10.133:/
