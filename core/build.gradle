@@ -26,7 +26,7 @@ dependencies {
     compileOnly "net.kyori:adventure-text-serializer-legacy:4.17.0"
     compileOnly "net.kyori:adventure-text-minimessage:4.17.0"
     compileOnly "org.jetbrains:annotations:24.0.0"
-    compileOnly "org.incendo:cloud-paper:2.0.0"
+    compileOnly "org.incendo:cloud-paper:2.0.1"
     compileOnly "org.incendo:cloud-annotations:2.1.0"
     compileOnly "eu.xap3y:xagui:${xaGuiVer}"
 }

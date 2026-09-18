@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group = 'eu.xap3y'
-    version = '1.4.0'
+    version = '1.4.1'
 
     repositories {
         //mavenLocal()
@@ -36,7 +36,7 @@ dependencies {
     implementation project(':paper')
 
     def xaguiDep = "eu.xap3y:xagui:${xaGuiVer}"
-    def cloudPaperDep = 'org.incendo:cloud-paper:2.0.0'
+    def cloudPaperDep = 'org.incendo:cloud-paper:2.0.1'
     def cloudAnnotationsDep = 'org.incendo:cloud-annotations:2.1.0'
 
     implConditional xaguiDep
