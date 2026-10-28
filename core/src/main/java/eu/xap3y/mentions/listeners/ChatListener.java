@@ -28,7 +28,7 @@ public class ChatListener implements Listener {
         boolean enabledReplacer = Mentions.getInstance().getConfig().getBoolean("chat.enabled", false);
         boolean multiMentions = Mentions.getInstance().getConfig().getBoolean("multi-mentions", true);
         boolean selfMention = Mentions.getInstance().getConfig().getBoolean("self-mention", false);
-        String replacer = enabledReplacer ? Mentions.getInstance().getConfig().getString("chat.replace", " ") : null;
+        String replacer = enabledReplacer ? Mentions.getInstance().getConfig().getString("chat.replace", "&a&l%nick%&r") : null;
 
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (!multiMentions && isAtleastOneMention) break;
@@ -57,7 +57,7 @@ public class ChatListener implements Listener {
                 String activeColors = ChatColor.getLastColors(Texter.colored(before));
 
                 String replacement = enabledReplacer
-                        ? Texter.colored(replacer.replace("%nick%", "&a&l" + name))
+                        ? Texter.colored(replacer.replace("%nick%", name))
                         : Texter.colored("&a&l" + name);
 
                 replacement += activeColors;
