@@ -8,6 +8,10 @@ gui-enable: true # Allow GUI to manage mention notifications using /mentions
 
 metrics: true # Enable bStats metrics
 
+version-check:
+    send-console: true # Check for updates and notify the console
+    send-ingame-op: true # Notify OP players 1 second after login
+
 multi-mentions: true # Allow multiple mentions in one message
 
 self-mention: false # Allow players to mention themselves
@@ -31,6 +35,15 @@ sound:
 chat:
     enabled: true
     replace: "&a&l%nick%&r"
+    hover:
+        enabled: false
+        # String or list of lines. %nick% / %target% = mentioned player, %player% = sender.
+        # PlaceholderAPI placeholders use the mentioned player (requires PlaceholderAPI + expansions).
+        # Example extra line: "&7Health: %player_health%"
+        # Paper: MiniMessage, &#RRGGBB and & colors. Legacy: & and &#RRGGBB (nearest color before 1.16).
+        text:
+            - "&#55FFFF%target%"
+            - "&7Mentioned by &f%player%"
 
 title:
     enabled: true

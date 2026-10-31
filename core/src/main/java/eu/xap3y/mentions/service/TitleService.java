@@ -1,5 +1,6 @@
 package eu.xap3y.mentions.service;
 
+import eu.xap3y.mentions.Mentions;
 import org.bukkit.entity.Player;
 
 public class TitleService {
@@ -37,8 +38,8 @@ public class TitleService {
             connection.getClass().getMethod("sendPacket", packetClass).invoke(connection, titlePacket);
             connection.getClass().getMethod("sendPacket", packetClass).invoke(connection, subtitlePacket);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception | LinkageError error) {
+            Mentions.getInstance().getCompatibilityGuard().warnOnce("Mention titles", error);
         }
     }
 

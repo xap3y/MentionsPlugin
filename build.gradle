@@ -7,10 +7,9 @@ plugins {
 
 allprojects {
     group = 'eu.xap3y'
-    version = '1.4.2'
 
     repositories {
-        //mavenLocal()
+        mavenLocal()
         mavenCentral()
         maven { url = "https://repo.papermc.io/repository/maven-public/" }
         maven { url = "https://oss.sonatype.org/content/groups/public/" }
@@ -83,7 +82,7 @@ processResources {
     def props = [
             version: project.version,
             website: "https://plugins.xap3y.eu/mentions",
-            description: "Mention plugin",
+            description: "Mentions plugin",
             dependClause: dependLine
     ]
     inputs.properties props

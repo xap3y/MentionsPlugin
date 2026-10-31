@@ -7,7 +7,10 @@ import eu.xap3y.mentions.commands.RootCommand;
 import eu.xap3y.mentions.listeners.ChatListener;
 import eu.xap3y.mentions.manager.CommandManager;
 import eu.xap3y.mentions.manager.ConfigManager;
+import eu.xap3y.mentions.manager.ConfigurationDefaults;
 import eu.xap3y.mentions.service.MentionService;
+import eu.xap3y.mentions.service.CompatibilityGuard;
+import eu.xap3y.mentions.service.VersionCheckService;
 import eu.xap3y.mentions.service.Metrics;
 import eu.xap3y.mentions.service.Texter;
 import eu.xap3y.xagui.XaGui;
@@ -55,9 +58,16 @@ public final class Mentions extends JavaPlugin {
     @Getter
     private PlatformAdapter platformAdapter;
 
+    @Getter
+    private CompatibilityGuard compatibilityGuard;
+
+    @Getter
+    private VersionCheckService versionCheckService;
+
     @Override
     public void onEnable() {
         instance = this;
+        compatibilityGuard = new CompatibilityGuard(getLogger());
 
         if ("@STANDALONE@".equals("true")) {
             xagui = new XaGui(this);
@@ -70,7 +80,8 @@ public final class Mentions extends JavaPlugin {
             useComponents = true;
             try {
                 platformAdapter = (PlatformAdapter) Class.forName("eu.xap3y.mentions.adapter.PaperAdapter").getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
+            } catch (Exception | LinkageError e) {
+                useComponents = false;
                 platformAdapter = new SpigotAdapter();
             }
         } catch (ClassNotFoundException e) {
@@ -108,6 +119,10 @@ public final class Mentions extends JavaPlugin {
 
         ConfigManager.initStorageConfig();
 
+        versionCheckService = new VersionCheckService(this);
+        manager.registerEvents(versionCheckService, this);
+        versionCheckService.check();
+
         org.bukkit.permissions.Permission perm = new org.bukkit.permissions.Permission("mentions.admin", "Unlock setting option in GUI to toggle if user can be mentioned or not", org.bukkit.permissions.PermissionDefault.OP);
         Bukkit.getPluginManager().addPermission(perm);
 
@@ -129,12 +144,20 @@ public final class Mentions extends JavaPlugin {
             );
         }
 
-        fixConfig();
     }
 
     public void fixConfig() {
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+        if (getConfig().getDefaults() != null
+                && ConfigurationDefaults.mergeMissing(getConfig(), getConfig().getDefaults())) {
+            saveConfig();
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        if (versionCheckService != null) {
+            versionCheckService.close();
+        }
     }
 
     public void reloadMessages() {
@@ -174,9 +197,19 @@ public final class Mentions extends JavaPlugin {
     }
 
     private static void registerListeners(PluginManager manager) {
+        boolean nativeChat = false;
+        try {
+            Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+            Listener paperChat = (Listener) Class.forName("eu.xap3y.mentions.listeners.PaperChatListener")
+                    .getDeclaredConstructor().newInstance();
+            manager.registerEvents(paperChat, instance);
+            nativeChat = true;
+        } catch (ReflectiveOperationException | LinkageError ignored) {
+            // Older servers load only the Java 8 listener, without Adventure dependencies.
+        }
         //  Registering listeners  \\
         Listener[] listeners = new Listener[]{
-            new ChatListener()
+            new ChatListener(nativeChat)
         };
 
         for (Listener listener : listeners) {

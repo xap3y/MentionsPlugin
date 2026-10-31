@@ -1,5 +1,6 @@
 package eu.xap3y.mentions.service;
 
+import eu.xap3y.mentions.Mentions;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -51,8 +52,8 @@ public class ActionBarService {
             Object playerConnection = playerConnectionField.get(iCraftPlayer);
             Method sendPacket = playerConnection.getClass().getDeclaredMethod("sendPacket", packet);
             sendPacket.invoke(playerConnection, packetPlayOutChat);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception | LinkageError error) {
+            Mentions.getInstance().getCompatibilityGuard().warnOnce("Mention action bar", error);
         }
     }
 }

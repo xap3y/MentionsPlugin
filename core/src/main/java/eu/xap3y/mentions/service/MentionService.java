@@ -33,11 +33,13 @@ public class MentionService {
         }
 
         if (useTitle && userTitlePreference) {
-            sendTitle(mentioner, mentioned);
+            Mentions.getInstance().getCompatibilityGuard().run("Mention titles",
+                    () -> sendTitle(mentioner, mentioned));
         }
 
         if (useActionBar && userActionPreference) {
-            sendActionBar(mentioner, mentioned);
+            Mentions.getInstance().getCompatibilityGuard().run("Mention action bar",
+                    () -> sendActionBar(mentioner, mentioned));
         }
     }
 

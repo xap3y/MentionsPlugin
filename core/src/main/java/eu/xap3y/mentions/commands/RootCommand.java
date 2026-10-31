@@ -1,6 +1,7 @@
 package eu.xap3y.mentions.commands;
 
 import eu.xap3y.mentions.Mentions;
+import eu.xap3y.mentions.manager.ConfigManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.incendo.cloud.annotations.Command;
@@ -13,10 +14,9 @@ public class RootCommand {
     public void reload(
             CommandSender p0
     ) {
-        Mentions.getInstance().reloadConfig();
+        ConfigManager.reloadConfig();
         Mentions.getInstance().reloadMessages();
         Mentions.getInstance().setGuiCloseButton();
-        Mentions.getInstance().fixConfig();
         Mentions.getTexter().setPrefix(Mentions.getInstance().getConfig().getString("prefix", "&7[&bmentions&7] &r"));
         Mentions.getTexter().response(p0, "&aReloaded config!");
     }

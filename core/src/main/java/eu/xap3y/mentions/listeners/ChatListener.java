@@ -1,74 +1,59 @@
 package eu.xap3y.mentions.listeners;
 
 import eu.xap3y.mentions.Mentions;
-import eu.xap3y.mentions.api.enums.SettingType;
-import eu.xap3y.mentions.manager.ConfigManager;
-import eu.xap3y.mentions.service.MentionService;
-import eu.xap3y.mentions.service.Texter;
+import eu.xap3y.mentions.adapter.HoverChatSender;
+import eu.xap3y.mentions.api.dto.ChatMention;
+import eu.xap3y.mentions.service.ChatMentionService;
+import eu.xap3y.mentions.service.CompatibilityGuard;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
-@SuppressWarnings("ALL")
 public class ChatListener implements Listener {
 
-    @EventHandler
+    private final boolean nativeChat;
+    private final boolean rgbSupported;
+    private volatile HoverChatSender hoverSender;
+
+    public ChatListener(boolean nativeChat) {
+        this.nativeChat = nativeChat;
+        String[] version = Bukkit.getBukkitVersion().split("[.-]");
+        this.rgbSupported = Integer.parseInt(version[0]) > 1 || Integer.parseInt(version[1]) >= 16;
+        this.hoverSender = HoverChatSender.create();
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        String message = event.getMessage();
-
-        boolean isAtleastOneMention = false;
-
-        String prefix = Mentions.getInstance().getConfig().getString("mention-prefix", "@");
-        boolean enabledReplacer = Mentions.getInstance().getConfig().getBoolean("chat.enabled", false);
-        boolean multiMentions = Mentions.getInstance().getConfig().getBoolean("multi-mentions", true);
-        boolean selfMention = Mentions.getInstance().getConfig().getBoolean("self-mention", false);
-        String replacer = enabledReplacer ? Mentions.getInstance().getConfig().getString("chat.replace", "&a&l%nick%&r") : null;
-
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            if (!multiMentions && isAtleastOneMention) break;
-
-            // Skip self if self-mentioning is disabled
-            if (!selfMention && target.getUniqueId().equals(event.getPlayer().getUniqueId())) {
-                continue;
-            }
-
-            String name = target.getName();
-            String regex = "(?i)(?<!\\w)" + Pattern.quote(prefix) + Pattern.quote(name) + "(?!\\w)";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(message);
-
-            if (matcher.find()) {
-                // Check permissions/settings - use continue instead of return!
-                if (!ConfigManager.getSetting(SettingType.ABLE_TO_MENTION, target.getUniqueId()) && target.hasPermission("mentions.admin")) {
-                    continue;
-                }
-                if (!ConfigManager.isAbleToBeMentionedFromConfig(target.getName())) {
-                    continue;
-                }
-
-                // Get last color codes before mention
-                String before = message.substring(0, matcher.start());
-                String activeColors = ChatColor.getLastColors(Texter.colored(before));
-
-                String replacement = enabledReplacer
-                        ? Texter.colored(replacer.replace("%nick%", name))
-                        : Texter.colored("&a&l" + name);
-
-                replacement += activeColors;
-
-                message = matcher.replaceAll(Matcher.quoteReplacement(replacement));
-                MentionService.run(event.getPlayer(), target);
-
-                isAtleastOneMention = true;
-            }
+        boolean hoverEnabled = ChatMentionService.isHoverEnabled();
+        if (nativeChat && hoverEnabled) {
+            return;
         }
 
-        event.setMessage(message);
+        List<ChatMention> mentions = ChatMentionService.findMentions(event.getPlayer(), event.getMessage());
+        if (mentions.isEmpty()) {
+            return;
+        }
+
+        HoverChatSender sender = hoverSender;
+        CompatibilityGuard compatibility = Mentions.getInstance().getCompatibilityGuard();
+        boolean sentWithHover = false;
+        if (hoverEnabled && sender != null) {
+            sentWithHover = compatibility.run("Mention hover",
+                    () -> sender.send(event, mentions, rgbSupported));
+            if (!sentWithHover) {
+                hoverSender = null;
+            }
+        } else if (hoverEnabled) {
+            compatibility.warnOnce("Mention hover", "chat component API is unavailable; using plain chat");
+        }
+        if (!sentWithHover && !event.isCancelled()) {
+            event.setMessage(ChatMentionService.replaceLegacy(event.getMessage(), mentions));
+        }
+
+        ChatMentionService.notifyTargets(event.getPlayer(), mentions);
     }
 }

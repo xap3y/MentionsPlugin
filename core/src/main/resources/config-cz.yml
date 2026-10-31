@@ -7,6 +7,10 @@ gui-enable: true # Povolit GUI pro správu zmínek pomocí /mentions
 
 metrics: true # Enable bStats metrics
 
+version-check:
+    send-console: true # Kontrolovat aktualizace a oznámit je v konzoli
+    send-ingame-op: true # Oznámit aktualizaci OP hráčům 1 sekundu po přihlášení
+
 multi-mentions: true # Povolit více zmínek v jedné zprávě
 
 self-mention: false # Povolit hráčům zmínit sami sebe
@@ -30,6 +34,15 @@ sound:
 chat:
     enabled: true
     replace: "&a&l%nick%&r"
+    hover:
+        enabled: false
+        # Řetězec nebo seznam řádků. %nick% / %target% = označený hráč, %player% = odesílatel.
+        # PlaceholderAPI placeholdery se vyhodnocují pro označeného hráče (vyžaduje PlaceholderAPI + expanze).
+        # Příklad dalšího řádku: "&7Životy: %player_health%"
+        # Paper: MiniMessage, &#RRGGBB a & barvy. Starší servery: & a &#RRGGBB (před 1.16 nejbližší barva).
+        text:
+            - "&#55FFFF%target%"
+            - "&7Označil: &f%player%"
 
 title:
     enabled: true

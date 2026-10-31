@@ -33,6 +33,7 @@ public class ConfigManager {
 
         Mentions.getInstance().saveDefaultConfig();
         Mentions.getInstance().reloadConfig();
+        Mentions.getInstance().fixConfig();
     }
 
     public static void initStorageConfig() {

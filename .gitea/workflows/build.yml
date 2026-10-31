@@ -12,23 +12,74 @@ jobs:
                   echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
                   apt update; apt-get install -y temurin-21-jdk
             - name: Prepare | Setup git
+              env:
+                  GIT_USERNAME: ${{ vars.GIT_USERNAME }}
+                  GIT_EMAIL: ${{ vars.GIT_EMAIL }}
               run: |
-                  git config --global user.name "Radim Lipovčan"
-                  git config --global user.email "radim@lipovcan.cz"
+                  git config --global user.name "$GIT_USERNAME"
+                  git config --global user.email "$GIT_EMAIL"
             - name: Check out repository code
               uses: actions/checkout@v4
-            - name: Build | Gradle build dependent jar
+            - name: Prepare | Read release version
+              id: version
               run: |
-                  ls -lah
-                  chmod +x ./gradlew
-                  ./gradlew clean shadowJar && ls -lah && ls */ -lah && ls */* -lah&& ls */*/* -lah
-           
+                  version=$(awk '/^[[:space:]]*version[[:space:]]*=/ { sub(/^[^=]*=[[:space:]]*/, ""); sub(/[[:space:]]*$/, ""); print; exit }' gradle.properties)
+                  if [ -z "$version" ]; then
+                      echo "Missing or empty version in gradle.properties" >&2
+                      exit 1
+                  fi
+                  echo "📦 Plugin version: $version"
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+            - name: Prepare | Determine release tag
+              id: release_tag
+              run: |
+                  branch="${GITHUB_REF_NAME}"
+                  version="${{ steps.version.outputs.version }}"
+                  
+                  if [[ "$branch" == "main" || "$branch" == "v2" ]]; then
+                      tag="v${version}"
+                  else
+                      tag="${branch}-v${version}"
+                  fi
+                  
+                  echo "🌿 Branch: $branch"
+                  echo "📦 Version: $version"
+                  echo "🏷️ Release tag: $tag"
+                  
+                  echo "tag=$tag" >> "$GITHUB_OUTPUT"
+            -   name: Build | Gradle build dependent jar
+                run: |
+                    chmod +x gradlew
+                    ./gradlew clean jar
+                    
+                    echo "=== JAR files ==="
+                    find . -type f -name "*.jar" -print
+                    
+                    echo "=== build/libs ==="
+                    ls -lah build/libs/ || true
+                    
+                    if ! compgen -G "build/libs/*.jar" > /dev/null; then
+                      echo "ERROR: No JAR found in build/libs/"
+                      exit 1
+                    fi
             - name: Release
               uses: https://git.lipovcan.cz/Upstream/gitea-release-action.git@v1
               with:
-                tag_name: "v1.4.2"
-                files: |-
-                  build/libs/*.jar
-            - name: Build | publish jar
-              run:  |
-                  curl --insecure --user username:mypass -T build/libs/*.jar ftp://192.168.10.133:/
+                  tag_name: "${{ steps.release_tag.outputs.tag }}"
+                  title: "${{ steps.release_tag.outputs.tag }}"
+                  files: |-
+                      build/libs/*.jar
+            -   name: Build | publish jar
+                env:
+                    FTP_HOST: ${{ secrets.FTP_HOST }}
+                    FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+                    FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+                run: |
+                    for jar in build/libs/*.jar; do
+                      [ -f "$jar" ] || exit 1
+                    
+                      curl --fail --show-error \
+                        --user "$FTP_USERNAME:$FTP_PASSWORD" \
+                        --upload-file "$jar" \
+                        "ftp://${FTP_HOST}/$(basename "$jar")"
+                    done

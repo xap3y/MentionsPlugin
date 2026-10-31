@@ -29,4 +29,19 @@ dependencies {
     compileOnly "org.incendo:cloud-paper:2.0.1"
     compileOnly "org.incendo:cloud-annotations:2.1.0"
     compileOnly "eu.xap3y:xagui:${xaGuiVer}"
+    compileOnly "me.clip:placeholderapi:2.11.6"
+
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+}
+
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://repo.helpch.at/releases/" }
+        }
+        filter {
+            includeGroup("me.clip")
+        }
+    }
 }
