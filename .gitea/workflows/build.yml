@@ -47,10 +47,10 @@ jobs:
                   echo "🏷️ Release tag: $tag"
                   
                   echo "tag=$tag" >> "$GITHUB_OUTPUT"
-            -   name: Build | Gradle build dependent jar
+            -   name: Build | Gradle buildAll
                 run: |
                     chmod +x gradlew
-                    ./gradlew clean jar
+                    ./gradlew buildAll
                     
                     echo "=== JAR files ==="
                     find . -type f -name "*.jar" -print
