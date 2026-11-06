@@ -1,12 +1,15 @@
 # Player mention plugin config in Czech, & for colors
+# https://plugins.xap3y.eu/mentions#setup
 prefix: "&8[&a&lMentions&8] &r"
 
 mention-prefix: "@" # Napr.: @ownercz
 
+# https://plugins.xap3y.eu/mentions#preferences
 gui-enable: true # Povolit GUI pro správu zmínek pomocí /mentions
 
 metrics: true # Enable bStats metrics
 
+# https://plugins.xap3y.eu/mentions#updates
 version-check:
     send-console: true # Kontrolovat aktualizace a oznámit je v konzoli
     send-ingame-op: true # Oznámit aktualizaci OP hráčům 1 sekundu po přihlášení
@@ -31,9 +34,18 @@ sound:
 
 # Formatovani chatu, neposle novou zpravy.
 # Napr.: Ahoj OwnerCZ, jak se máš? -> Ahoj &a&lOwnerCZ&r, jak se máš?
+# https://plugins.xap3y.eu/mentions#hover-colors
 chat:
     enabled: true
     replace: "&a&l%nick%&r"
+    # https://plugins.xap3y.eu/mentions#click-actions
+    click:
+        enabled: false
+        # Doplní návrh příkazu do chatu; příkaz automaticky nespouští.
+        # %target_name%, %target_uuid%: označený hráč
+        # %sender_name%, %sender_uuid%: odesílatel zmínky
+        # %clicker_name%, %clicker_uuid%: příjemce zprávy, který na ni klikne
+        suggestion: "/msg %target_name% "
     hover:
         enabled: false
         # Řetězec nebo seznam řádků. %nick% / %target% = označený hráč, %player% = odesílatel.
@@ -57,3 +69,31 @@ exclusion:
     case-sensitive: false
     players:
         - "xap3y"
+
+# Respektuje self-mention a vyloučené hráče. Text je nezávislý na mention-prefix.
+# https://plugins.xap3y.eu/mentions#everyone-ping
+everyone-ping:
+    enabled: false
+    require-permisison: false # permission is: mentions.everyone
+    text: "@everyone"
+    # Zobrazený text; %text% je nastavený spouštěč. HEX a MiniMessage podle podpory serveru.
+    replace: "&a&l%text%&r"
+    enable-title: true
+    enable-actionbar: true
+
+# Vyžaduje Vault a poskytovatele oprávnění (např. LuckPerms).
+# Pokud jsou vyplněné permission i group, musí platit OBĚ podmínky.
+# ping-sound přepíše osobní nastavení zvuku příjemce, včetně vypnutého zvuku.
+# Každý příjemce dostane pouze jedno upozornění za zprávu.
+# https://plugins.xap3y.eu/mentions#group-pings
+group-pings:
+    example-staff:
+        enabled: false
+        text: "@staff"
+        # Zobrazený text; %text% je nastavený spouštěč.
+        replace: "&a&l%text%&r"
+        permission: "pings.staff"
+        # group: "staff"
+        ping-sound: "ENTITY_PLAYER_LEVELUP"
+        enable-title: true
+        enable-actionbar: true

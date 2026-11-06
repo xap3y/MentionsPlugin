@@ -64,7 +64,6 @@ public class SoundGui extends VirtualMenu<Player> {
                         } else if (event.getClick().isRightClick()) {
                             ConfigManager.setSettingSound(event.getPlayer().getUniqueId(), sound.name);
                             ConfigManager.getPlayerSoundMap().put(event.getPlayer().getUniqueId(), sound.sound);
-                            Mentions.getInstance().saveConfig();
                             Mentions.getTexter().response(event.getPlayer(), Mentions.getInstance().getMessageConfig().getString("sound-gui.sound-chosen", "&aYou have chosen the sound: &b" + sound.name).replace("{sound}", sound.name));
                             gui.close(event.getPlayer());
                         }

@@ -1,13 +1,17 @@
 # Configuration file for Mentions plugin
 # Supports HEX colors using &#RRGGBB or MiniMessage format
+# https://plugins.xap3y.eu/mentions#setup
 prefix: "&8[&a&lMentions&8] &r"
 
+# Leave empty string for no prefix needed to mention someone
 mention-prefix: "@" # Etc.: @XAP3Y
 
+# https://plugins.xap3y.eu/mentions#preferences
 gui-enable: true # Allow GUI to manage mention notifications using /mentions
 
 metrics: true # Enable bStats metrics
 
+# https://plugins.xap3y.eu/mentions#updates
 version-check:
     send-console: true # Check for updates and notify the console
     send-ingame-op: true # Notify OP players 1 second after login
@@ -32,9 +36,18 @@ sound:
 
 # Chat formatting, does not send a new message.
 # Etc. Hi XAP3Y, how are you? -> Hi &a&lXAP3Y&r, how are you?
+# https://plugins.xap3y.eu/mentions#hover-colors
 chat:
     enabled: true
     replace: "&a&l%nick%&r"
+    # https://plugins.xap3y.eu/mentions#click-actions
+    click:
+        enabled: false
+        # Suggests a command; never executes it automatically.
+        # %target_name%, %target_uuid%: mentioned player
+        # %sender_name%, %sender_uuid%: player who sent the mention
+        # %clicker_name%, %clicker_uuid%: player viewing/clicking the message
+        suggestion: "/msg %target_name% "
     hover:
         enabled: false
         # String or list of lines. %nick% / %target% = mentioned player, %player% = sender.
@@ -58,3 +71,31 @@ exclusion:
     case-sensitive: false
     players:
         - "xap3y"
+
+# Respects self-mention and excluded players. Text is independent of mention-prefix.
+# https://plugins.xap3y.eu/mentions#everyone-ping
+everyone-ping:
+    enabled: false
+    require-permisison: false # permission is: mentions.everyone
+    text: "@everyone"
+    # Display text; %text% is the configured trigger.
+    replace: "&a&l%text%&r"
+    enable-title: true
+    enable-actionbar: true
+
+# Requires Vault and a permission provider (e.g. LuckPerms).
+# If permission and group are both present, BOTH must match.
+# ping-sound overrides the recipient's sound choice, including disabled sound.
+# Each recipient receives only one notification per chat message.
+# https://plugins.xap3y.eu/mentions#group-pings
+group-pings:
+    example-staff:
+        enabled: false
+        text: "@staff"
+        # Display text; %text% is the configured trigger.
+        replace: "&a&l%text%&r"
+        permission: "pings.staff"
+        # group: "staff"
+        ping-sound: "ENTITY_PLAYER_LEVELUP"
+        enable-title: true
+        enable-actionbar: true

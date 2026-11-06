@@ -15,6 +15,40 @@ import static org.junit.Assert.*;
 public class PaperMentionRendererTest {
 
     @Test
+    public void gradientReplacementWorksWithoutHoverOrClick() {
+        String message = "Hi @Bob!";
+        ChatMention mention = new ChatMention(3, 7, null,
+                "<b><gradient:#DFFF14:#8CFF81>Bob</gradient></b>", "");
+        Component rendered = PaperMentionRenderer.render(Component.text(message), message,
+                Collections.singletonList(mention));
+        assertEquals("Hi Bob!", PlainTextComponentSerializer.plainText().serialize(rendered));
+        String legacy = HexUtil.toLegacy(mention.getReplacement(), true);
+        assertTrue(legacy.contains("§x"));
+        assertFalse(legacy.contains("<gradient"));
+    }
+
+    @Test
+    public void hashHexReplacementConvertsToLegacyRgb() {
+        String legacy = HexUtil.toLegacy("&#ddffffBob", true);
+        assertTrue(legacy.contains("§x§d§d§f§f§f§f"));
+        assertFalse(legacy.contains("&#"));
+        assertFalse(HexUtil.toLegacy("&#ddffffBob", false).contains("§x"));
+    }
+
+    @Test
+    public void suggestionDoesNotAttachToSurroundingText() {
+        ChatMention mention = new ChatMention(3, 7, null, "Bob", "");
+        mention.setClickSuggestion("/msg Bob ");
+        Component rendered = PaperMentionRenderer.render(Component.text("Hi @Bob!"), "Hi @Bob!",
+                Collections.singletonList(mention));
+        Component clicked = rendered.children().stream().filter(child -> child.clickEvent() != null)
+                .findFirst().orElseThrow();
+        assertEquals(ClickEvent.suggestCommand("/msg Bob "), clicked.clickEvent());
+        assertNull(rendered.clickEvent());
+        assertNull(rendered.children().getLast().clickEvent());
+    }
+
+    @Test
     public void hoverSupportsMiniMessageRgbAndMultiline() {
         String message = "Hello @Bob!";
         Component rendered = PaperMentionRenderer.render(Component.text(message), message,

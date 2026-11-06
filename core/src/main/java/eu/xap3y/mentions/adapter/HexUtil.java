@@ -53,6 +53,13 @@ public final class HexUtil {
 
     private HexUtil() {}
 
+    public static String toLegacy(String input, boolean rgbSupported) {
+        LegacyComponentSerializer serializer = rgbSupported
+                ? LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build()
+                : LegacyComponentSerializer.legacySection();
+        return serializer.serialize(parseText(input));
+    }
+
     public static Component parseText(String input) {
         if (input == null || input.isEmpty()) {
             return Component.empty();
