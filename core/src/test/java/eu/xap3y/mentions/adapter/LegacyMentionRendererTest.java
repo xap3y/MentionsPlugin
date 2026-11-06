@@ -16,6 +16,36 @@ import static org.junit.Assert.*;
 public class LegacyMentionRendererTest {
 
     @Test
+    public void plainReplacementSupportsHexWithoutAdventure() {
+        ChatMention mention = new ChatMention(3, 7, null, "&#ddffffBob", "");
+        String result = ChatMentionService.replaceLegacy("Hi @Bob!", Collections.singletonList(mention), true);
+        assertTrue(result.contains("§x§d§d§f§f§f§fBob"));
+        assertFalse(result.contains("&#"));
+        String old = ChatMentionService.replaceLegacy("Hi @Bob!", Collections.singletonList(mention), false);
+        assertFalse(old.contains("§x"));
+        assertFalse(old.contains("&#"));
+    }
+
+    @Test
+    public void clickSuggestionIsOnlyAttachedToTheMention() {
+        ChatMention mention = new ChatMention(3, 7, null, "Bob", "");
+        mention.setClickSuggestion("/msg Bob ");
+        BaseComponent[] rendered = LegacyMentionRenderer.render("%2$s", "Sender", "Hi @Bob!",
+                Collections.singletonList(mention), false);
+        int clicks = 0;
+        for (BaseComponent component : rendered) {
+            if (component.getClickEvent() != null) {
+                clicks++;
+                assertEquals("Bob", component.toPlainText());
+                assertEquals(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND,
+                        component.getClickEvent().getAction());
+                assertEquals("/msg Bob ", component.getClickEvent().getValue());
+            }
+        }
+        assertEquals(1, clicks);
+    }
+
+    @Test
     public void hoverIsLimitedToMentionAndPreservesChatFormat() {
         String message = "Hello @Bob, how are you? 100%";
         List<ChatMention> mentions = Collections.singletonList(

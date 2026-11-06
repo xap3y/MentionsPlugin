@@ -7,7 +7,14 @@ import eu.xap3y.mentions.commands.RootCommand;
 import eu.xap3y.mentions.listeners.ChatListener;
 import eu.xap3y.mentions.manager.CommandManager;
 import eu.xap3y.mentions.manager.ConfigManager;
-import eu.xap3y.mentions.manager.ConfigurationDefaults;
+import eu.xap3y.mentions.manager.ConfigurationFileUpdater;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.stream.Collectors;
 import eu.xap3y.mentions.service.MentionService;
 import eu.xap3y.mentions.service.CompatibilityGuard;
 import eu.xap3y.mentions.service.VersionCheckService;
@@ -23,8 +30,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -117,6 +127,8 @@ public final class Mentions extends JavaPlugin {
             isFolia = false;
         }
 
+        registerPermission("mentions.everyone", "Players with this permission can mention everyone", PermissionDefault.OP);
+
         ConfigManager.initStorageConfig();
 
         versionCheckService = new VersionCheckService(this);
@@ -147,9 +159,24 @@ public final class Mentions extends JavaPlugin {
     }
 
     public void fixConfig() {
-        if (getConfig().getDefaults() != null
-                && ConfigurationDefaults.mergeMissing(getConfig(), getConfig().getDefaults())) {
-            saveConfig();
+        File file = new File(getDataFolder(), "config.yml");
+        try (InputStream resource = getResource("config.yml")) {
+            if (resource == null) {
+                return;
+            }
+            String defaults;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))) {
+                defaults = reader.lines().collect(Collectors.joining("\n")) + "\n";
+            }
+            String current = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+            String updated = ConfigurationFileUpdater.merge(current, defaults);
+            if (!current.equals(updated)) {
+                new YamlConfiguration().loadFromString(updated);
+                Files.write(file.toPath(), updated.getBytes(StandardCharsets.UTF_8));
+                reloadConfig();
+            }
+        } catch (IOException | InvalidConfigurationException | RuntimeException error) {
+            getLogger().warning("Could not update config.yml: " + error.getClass().getSimpleName());
         }
     }
 
@@ -215,5 +242,14 @@ public final class Mentions extends JavaPlugin {
         for (Listener listener : listeners) {
             manager.registerEvents(listener, instance);
         }
+    }
+
+    private static Permission registerPermission(String node, String description, PermissionDefault permissionDefault) {
+        Permission existing = Bukkit.getPluginManager().getPermission(node);
+        if (existing != null) return existing;
+
+        Permission newPermission = new Permission(node, description, permissionDefault);
+        Bukkit.getPluginManager().addPermission(newPermission);
+        return newPermission;
     }
 }

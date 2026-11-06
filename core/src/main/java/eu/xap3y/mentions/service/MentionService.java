@@ -14,6 +14,11 @@ public class MentionService {
     private static int totalMentions = 0;
 
     public static void run(Player mentioner, Player mentioned) {
+        run(mentioner, mentioned, "", true, true);
+    }
+
+    public static void run(Player mentioner, Player mentioned, String soundOverride,
+                           boolean enableTitle, boolean enableActionbar) {
 
         incrementTotalMentions();
 
@@ -28,16 +33,16 @@ public class MentionService {
         boolean useActionBar = cfg.getBoolean("actionbar.enabled", false);
         boolean userActionPreference = ConfigManager.getSetting(SettingType.ACTIONBAR, mentioned.getUniqueId());
 
-        if (useSound && userSoundPreference) {
-            sendSound(mentioner, mentioned);
+        if (!soundOverride.isEmpty() || (useSound && userSoundPreference)) {
+            sendSound(mentioner, mentioned, soundOverride);
         }
 
-        if (useTitle && userTitlePreference) {
+        if (enableTitle && useTitle && userTitlePreference) {
             Mentions.getInstance().getCompatibilityGuard().run("Mention titles",
                     () -> sendTitle(mentioner, mentioned));
         }
 
-        if (useActionBar && userActionPreference) {
+        if (enableActionbar && useActionBar && userActionPreference) {
             Mentions.getInstance().getCompatibilityGuard().run("Mention action bar",
                     () -> sendActionBar(mentioner, mentioned));
         }
@@ -91,17 +96,18 @@ public class MentionService {
         }
     }
 
-    private static void sendSound(Player player, Player target) {
+    private static void sendSound(Player player, Player target, String override) {
 
         float volume = (float) Mentions.getInstance().getConfig().getDouble("sound.volume", 1.0);
         float pitch = (float) Mentions.getInstance().getConfig().getDouble("sound.pitch", 1.0);
 
-        if (ConfigManager.getPlayerSoundMap().get(target.getUniqueId()) != null) {
+        if (override.isEmpty() && ConfigManager.getPlayerSoundMap().get(target.getUniqueId()) != null) {
             target.playSound(target.getLocation(), ConfigManager.getPlayerSoundMap().get(target.getUniqueId()), volume, pitch);
             return;
         }
 
-        String sound = Mentions.getInstance().getConfig().getString("sound.sound", "LAVA_POP");
+        String sound = override.isEmpty()
+                ? Mentions.getInstance().getConfig().getString("sound.sound", "LAVA_POP") : override;
 
         String serverVer = Mentions.getInstance().getServer().getVersion();
         boolean isLegacy = serverVer.contains("1.8");

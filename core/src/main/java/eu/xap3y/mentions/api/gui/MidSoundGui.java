@@ -117,7 +117,6 @@ public class MidSoundGui extends VirtualMenu<Player> {
                                     sound.sound()
                             );
 
-                            Mentions.getInstance().saveConfig();
 
                             Mentions.getTexter().response(
                                     event.getPlayer(),

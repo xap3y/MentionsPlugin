@@ -3,6 +3,7 @@ package eu.xap3y.mentions.adapter;
 import eu.xap3y.mentions.api.dto.ChatMention;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.ClickEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,9 @@ public final class PaperMentionRenderer {
             Component replacement = HexUtil.parseText(mention.getReplacement());
             if (!mention.getHoverText().isEmpty()) {
                 replacement = replacement.hoverEvent(HoverEvent.showText(HexUtil.parseText(mention.getHoverText())));
+            }
+            if (!mention.getClickSuggestion().isEmpty()) {
+                replacement = replacement.clickEvent(ClickEvent.suggestCommand(mention.getClickSuggestion()));
             }
             replacements.put(plain.substring(mention.getStart(), mention.getEnd()), replacement);
         }

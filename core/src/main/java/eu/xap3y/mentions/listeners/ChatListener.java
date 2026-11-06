@@ -28,8 +28,8 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        boolean hoverEnabled = ChatMentionService.isHoverEnabled();
-        if (nativeChat && hoverEnabled) {
+        boolean hoverEnabled = ChatMentionService.isInteractiveEnabled();
+        if (nativeChat) {
             return;
         }
 
