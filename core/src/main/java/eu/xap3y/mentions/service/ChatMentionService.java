@@ -41,9 +41,12 @@ public final class ChatMentionService {
         for (ChatMention mention : mentions) {
             ChatMention copy = new ChatMention(mention.getStart(), mention.getEnd(), mention.getTarget(),
                     mention.getReplacement(), mention.getHoverText());
-            if (mention.getTarget() != null && viewer != null && config.getBoolean("chat.click.enabled", false)) {
-                copy.setClickSuggestion(clickVariables(config.getString("chat.click.suggestion", "/msg %target_name% "),
-                        sender, mention.getTarget(), viewer));
+            if (mention.getTarget() != null && config.getBoolean("chat.click.enabled", false)) {
+                String suggestion = config.getString("chat.click.suggestion", "/msg %target_name% ");
+                if (viewer != null || (!suggestion.contains("%clicker_name%")
+                        && !suggestion.contains("%clicker_uuid%"))) {
+                    copy.setClickSuggestion(clickVariables(suggestion, sender, mention.getTarget(), viewer));
+                }
             }
             rendered.add(copy);
         }
@@ -51,11 +54,14 @@ public final class ChatMentionService {
     }
 
     public static String clickVariables(String text, Player sender, Player target, Player clicker) {
-        return text.replace("%target_name%", target.getName())
+        String command = text.replace("%target_name%", target.getName())
                 .replace("%target_uuid%", target.getUniqueId().toString())
                 .replace("%sender_name%", sender.getName())
-                .replace("%sender_uuid%", sender.getUniqueId().toString())
-                .replace("%clicker_name%", clicker.getName())
+                .replace("%sender_uuid%", sender.getUniqueId().toString());
+        if (clicker == null) {
+            return command;
+        }
+        return command.replace("%clicker_name%", clicker.getName())
                 .replace("%clicker_uuid%", clicker.getUniqueId().toString());
     }
 

@@ -6,7 +6,7 @@ authors: [ XAP3Y ]
 description: ${description}
 website: ${website}
 folia-supported: true
-softdepend: [ PlaceholderAPI, Vault ]
+softdepend: [ PlaceholderAPI, Vault, ChatControl, EssentialsChat ]
 
 ${dependClause}
 

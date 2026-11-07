@@ -234,6 +234,14 @@ public final class Mentions extends JavaPlugin {
         } catch (ReflectiveOperationException | LinkageError ignored) {
             // Older servers load only the Java 8 listener, without Adventure dependencies.
         }
+        if (nativeChat && manager.isPluginEnabled("ChatControl")) {
+            try {
+                Class.forName("eu.xap3y.mentions.listeners.ChatControlListener")
+                        .getMethod("register", Mentions.class).invoke(null, instance);
+            } catch (ReflectiveOperationException | LinkageError error) {
+                instance.getCompatibilityGuard().warnOnce("ChatControl mentions", error);
+            }
+        }
         //  Registering listeners  \\
         Listener[] listeners = new Listener[]{
             new ChatListener(nativeChat)
